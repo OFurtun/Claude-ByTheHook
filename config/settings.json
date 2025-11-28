@@ -3,8 +3,6 @@
     "deny": [
       "Bash(rm -rf /)",
       "Bash(rm -rf /*)",
-      "Bash(:(){ :|:& };:)",
-      "Bash(:(){:|:&};:)",
       "Bash(dd*of=/dev/sd*)",
       "Bash(dd*of=/dev/nvme*)",
       "Bash(mkfs*/dev/sd*)",
