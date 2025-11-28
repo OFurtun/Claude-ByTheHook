@@ -18,6 +18,7 @@ file_path=$(echo "$input" | jq -r '.tool_input.file_path // .tool_input.path // 
 
 # Extended protection patterns (hooks can do substring matching)
 PROTECTED_PATTERNS=(
+  ".env"
   "password"
   "secret"
   "credential"
@@ -36,6 +37,8 @@ PROTECTED_PATTERNS=(
   ".pypirc"
   ".netrc"
   ".docker/config"
+  ".aws/credentials"
+  ".ssh/config"
 )
 
 if [[ "$tool_name" == "Edit" ]] || [[ "$tool_name" == "Write" ]]; then
