@@ -1,0 +1,57 @@
+{
+  "permissions": {
+    "deny": [
+      "Bash(rm -rf /)",
+      "Bash(rm -rf /*)",
+      "Bash(:(){ :|:& };:)",
+      "Bash(:(){:|:&};:)",
+      "Bash(dd*of=/dev/sd*)",
+      "Bash(dd*of=/dev/nvme*)",
+      "Bash(mkfs*/dev/sd*)",
+      "Bash(mkfs*/dev/nvme*)",
+      "Bash(> /dev/sd*)",
+      "Bash(> /dev/nvme*)",
+      "Bash(kill -9 1)",
+      "Edit(/mnt/c/Windows/**)",
+      "Edit(/mnt/c/Program Files/**)",
+      "Edit(/mnt/c/Program Files (x86)/**)",
+      "Write(/mnt/c/Windows/**)",
+      "Write(/mnt/c/Program Files/**)",
+      "Write(/mnt/c/Program Files (x86)/**)",
+      "Bash(rm*/mnt/c/Windows*)",
+      "Bash(rm*/mnt/c/Program Files*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          { "type": "command", "command": "bash ~/.claude/hooks/security-bash.sh", "timeout": 5 },
+          { "type": "command", "command": "bash ~/.claude/hooks/git-safety.sh", "timeout": 3 },
+          { "type": "command", "command": "bash ~/.claude/hooks/rate-limit.sh", "timeout": 2 }
+        ]
+      },
+      {
+        "matcher": "Edit",
+        "hooks": [
+          { "type": "command", "command": "bash ~/.claude/hooks/protect-files.sh", "timeout": 3 }
+        ]
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          { "type": "command", "command": "bash ~/.claude/hooks/protect-files.sh", "timeout": 3 }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          { "type": "command", "command": "bash ~/.claude/hooks/audit-logger.sh", "timeout": 2 }
+        ]
+      }
+    ]
+  }
+}
