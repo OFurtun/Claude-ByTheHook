@@ -23,10 +23,71 @@ fi
 echo "Creating directories..."
 mkdir -p "$CLAUDE_DIR/hooks" "$CLAUDE_DIR/logs"
 
-# Copy hooks
+# Install hooks with existing file detection
 echo "Installing hooks..."
-cp "$SCRIPT_DIR/hooks/"*.sh "$CLAUDE_DIR/hooks/"
-chmod +x "$CLAUDE_DIR/hooks/"*.sh
+echo ""
+
+install_hook() {
+  local src="$1"
+  local filename=$(basename "$src")
+  local dest="$CLAUDE_DIR/hooks/$filename"
+
+  if [[ -f "$dest" ]]; then
+    # Check if files differ
+    if diff -q "$src" "$dest" &>/dev/null; then
+      echo "  [OK] $filename - already up to date"
+      return
+    fi
+
+    echo "  [!!] $filename - existing hook differs from repo version"
+    echo ""
+    echo "  Existing: $dest"
+    echo "  New:      $src"
+    echo ""
+
+    # Show diff summary
+    echo "  Changes:"
+    diff --color=auto -u "$dest" "$src" | head -30 || true
+    echo ""
+
+    while true; do
+      read -rp "  Replace existing $filename? [r]eplace / [s]kip / [b]ackup & replace: " choice
+      case "$choice" in
+        r|R|replace)
+          cp "$src" "$dest"
+          chmod +x "$dest"
+          echo "  [OK] $filename - replaced"
+          break
+          ;;
+        s|S|skip)
+          echo "  [--] $filename - skipped"
+          break
+          ;;
+        b|B|backup)
+          backup="$dest.backup.$(date +%Y%m%d%H%M%S)"
+          cp "$dest" "$backup"
+          cp "$src" "$dest"
+          chmod +x "$dest"
+          echo "  [OK] $filename - backed up to $(basename "$backup") and replaced"
+          break
+          ;;
+        *)
+          echo "  Please enter r, s, or b"
+          ;;
+      esac
+    done
+  else
+    cp "$src" "$dest"
+    chmod +x "$dest"
+    echo "  [OK] $filename - installed"
+  fi
+
+  echo ""
+}
+
+for hook_file in "$SCRIPT_DIR/hooks/"*.sh; do
+  install_hook "$hook_file"
+done
 
 # Backup existing settings if present
 if [[ -f "$CLAUDE_DIR/settings.json" ]]; then

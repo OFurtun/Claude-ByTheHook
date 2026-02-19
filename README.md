@@ -15,9 +15,14 @@ Claude Code's bypass mode (`--dangerously-skip-permissions`) removes all permiss
 
 - **Minimal deny rules** - Only block truly catastrophic operations (rm -rf /, fork bombs, disk destruction)
 - **Smart hooks** - Bypass-mode-only protection for risky operations
-- **Audit logging** - Track all operations for review
-- **WSL-aware** - Protects Windows system directories from WSL access
-- **Non-intrusive** - In normal mode, you can still approve any operation
+- **Sensitive file protection** - Block editing of `.env`, credentials, SSH keys, API tokens, and other secrets
+- **Mounted drive guardrails** - Read-only access to Windows filesystem (`/mnt/`), with write access limited to Desktop directories
+- **Git safety** - Block force pushes to main/master, warn on destructive git operations
+- **Rate limiting** - Prevent runaway loops with configurable operation thresholds
+- **Audit logging** - Track all operations with daily JSONL logs
+- **WSL-aware** - Protects Windows system directories and blocks Windows executable access from WSL
+- **Non-intrusive** - In normal mode, all permission prompts work as usual
+- **Safe upgrades** - Installer detects existing hooks and prompts before overwriting
 
 ## Requirements
 
