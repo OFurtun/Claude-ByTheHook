@@ -59,6 +59,7 @@ Then merge `config/settings.json` into your `~/.claude/settings.json`.
 - Windows executable access (`cmd.exe`, `powershell.exe`)
 - Piping downloads to shell (`curl | sh`)
 - System directory modifications
+- Edit/Write to mounted drives (`/mnt/`) — except `Desktop` directories (read-only access still allowed everywhere)
 
 ### Warnings in Bypass Mode
 - `sudo` commands
@@ -71,7 +72,7 @@ Then merge `config/settings.json` into your `~/.claude/settings.json`.
 | Hook | Purpose |
 |------|---------|
 | `security-bash.sh` | Block dangerous bash commands |
-| `protect-files.sh` | Protect sensitive files from editing |
+| `protect-files.sh` | Protect sensitive files from editing; restrict mounted drive writes to Desktop only |
 | `git-safety.sh` | Git operation safety checks |
 | `audit-logger.sh` | Log all operations |
 | `rate-limit.sh` | Prevent runaway loops (>500 ops/session) |
