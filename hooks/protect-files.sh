@@ -49,6 +49,15 @@ if [[ "$tool_name" == "Edit" ]] || [[ "$tool_name" == "Write" ]]; then
       exit 2
     fi
   done
+
+  # Block Edit/Write on mounted drives, except Desktop directories
+  if [[ "$file_path" == /mnt/* ]]; then
+    if [[ "$file_path" == */Desktop/* ]]; then
+      exit 0
+    fi
+    echo "BLOCKED: Write access to mounted drives restricted to Desktop only" >&2
+    exit 2
+  fi
 fi
 
 exit 0
